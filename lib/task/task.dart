@@ -1,36 +1,55 @@
 import 'package:flutter/material.dart';
 
-class Task extends StatefulWidget {
-  const Task({super.key});
-
-  @override
-  State<Task> createState() => _TaskState();
-}
-
-class _TaskState extends State<Task> {
+class Task extends StatelessWidget {
   bool isChecked = false;
+
+  final String title;
+
+  String? Description;
+
+  String? Frequency;
+
+  late String dueDay;
+  bool isCompleted = false;
+  Function(bool?)? onChanged;
+
+  Task({
+    super.key,
+    required this.title,
+    required this.isCompleted,
+    required this.Frequency,
+    required this.dueDay,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(50),
+      padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
       child: Container(
-        padding: const EdgeInsets.all(25),
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-            color: Colors.yellow, borderRadius: BorderRadius.circular(20)),
+            color: Color.fromARGB(255, 116, 255, 111),
+            borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
             Checkbox(
               checkColor: Colors.black,
-              value: isChecked,
-              onChanged: (p0) {},
+              value: isCompleted,
+              onChanged: onChanged,
+              activeColor: Colors.black,
             ),
-            const Column(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Running on the floor"),
                 Text(
-                  "22/3/2004 Everyday",
-                  style: TextStyle(fontSize: 11),
+                  title,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  dueDay + " " + Frequency.toString(),
+                  style: const TextStyle(fontSize: 11),
                 ),
               ],
             )
