@@ -11,7 +11,7 @@ void main() {
           seedColor: const Color.fromARGB(255, 110, 40, 231)),
       useMaterial3: true,
     ),
-    home: const CreateView(),
+    home: const Home(),
     debugShowCheckedModeBanner: false,
   ));
 }

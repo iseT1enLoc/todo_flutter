@@ -11,7 +11,7 @@ class Task extends StatelessWidget {
 
   late String dueDay;
   bool isCompleted = false;
-  Function(bool?)? onChanged;
+  Function(bool?)? onChecked; //
 
   Task({
     super.key,
@@ -19,7 +19,7 @@ class Task extends StatelessWidget {
     required this.isCompleted,
     required this.Frequency,
     required this.dueDay,
-    required this.onChanged,
+    required this.onChecked,
   });
 
   @override
@@ -30,15 +30,16 @@ class Task extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 116, 255, 111),
-            borderRadius: BorderRadius.circular(10)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Row(
           children: [
             Checkbox(
               checkColor: Colors.black,
               value: isCompleted,
-              onChanged: onChanged,
-              activeColor: Colors.black,
+              onChanged: onChecked,
+              activeColor: Colors.white,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

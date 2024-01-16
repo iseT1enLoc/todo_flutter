@@ -23,6 +23,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text("Home"),
       ),
@@ -34,7 +35,7 @@ class _HomeState extends State<Home> {
             isCompleted: todoTask[index][1],
             Frequency: "Every day",
             dueDay: "20/5/2020",
-            onChanged: (value) => setCheckedBoxState(value, index),
+            onChecked: (value) => setCheckedBoxState(value, index),
           );
         },
       ),
