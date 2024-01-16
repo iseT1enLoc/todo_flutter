@@ -1,27 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:twodu/const/const.dart';
+import 'package:twodu/database/FrequenData.dart';
+import 'package:twodu/database/data.dart';
 
 class CreateView extends StatefulWidget {
-  const CreateView({super.key});
+  /* const CreateView({super.key}); */
 
   @override
   State<CreateView> createState() => _CreateViewState();
 }
 
 class _CreateViewState extends State<CreateView> {
-  DateTime? selectedDate;
+  DateTime? _selectedDate;
+  late TextEditingController title;
+  late TextEditingController description;
+  late String frequence;
+  /* final void Function(BuildContext) onAdd; */
+  final _tasklist = Hive.box("todolist");
+  DataTask db = DataTask();
+  void SaveNewTask() {
+    db.todoList.add([
+      title.text,
+      description.text,
+      frequence,
+      DateTime.utc(2024, 5, 6),
+      false
+    ]);
+    title.clear();
+    description.clear();
+    db.updateDatabase();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      taskList,
+      (Route route) => false,
+    );
+  }
+
+  @override
+  void initState() {
+    title = TextEditingController();
+    description = TextEditingController();
+    frequence = "Select frequence";
+    if (_tasklist.get('TASKLIST') == null) {
+      db.createInitData();
+    } else {
+      db.loadData();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    const List<String> _items = <String>[
+    List<String> _items = <String>[
       'Select Frequency',
-      'One',
-      'Two',
-      'Three',
-      'Four'
+      'everyday',
+      '2 times a week',
+      '3 times a week',
+      'twice a month',
     ];
+    String _dropdownValue = _items[0];
     double screen_width = MediaQuery.of(context).size.width;
-    String dropdownValue = _items.first;
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 226, 226, 226),
       appBar: AppBar(
@@ -43,6 +83,7 @@ class _CreateViewState extends State<CreateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               TextField(
+                controller: title,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -60,6 +101,7 @@ class _CreateViewState extends State<CreateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               TextField(
+                controller: description,
                 decoration: InputDecoration(
                   hintText: "Enter your description",
                   filled: true,
@@ -87,7 +129,7 @@ class _CreateViewState extends State<CreateView> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                value: dropdownValue,
+                value: _dropdownValue,
                 items: _items
                     .map<DropdownMenuItem<String>>(
                       (String value) =>
@@ -97,7 +139,8 @@ class _CreateViewState extends State<CreateView> {
                 hint: const Text("Select frenquency"),
                 onChanged: (value) {
                   setState(() {
-                    dropdownValue = value.toString();
+                    _dropdownValue = value.toString();
+                    frequence = _dropdownValue;
                   });
                 },
               ), //Due date
@@ -122,7 +165,7 @@ class _CreateViewState extends State<CreateView> {
                 initialPickerDateTime:
                     DateTime.now().add(const Duration(days: 20)),
                 onChanged: (DateTime? value) {
-                  selectedDate = value;
+                  _selectedDate = value;
                 },
               ),
               const SizedBox(
@@ -133,7 +176,9 @@ class _CreateViewState extends State<CreateView> {
                   minimumSize: Size(screen_width, 20),
                   backgroundColor: Colors.black,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  SaveNewTask();
+                },
                 child: const Text('Add',
                     style: TextStyle(
                       color: Colors.white,
@@ -148,7 +193,7 @@ class _CreateViewState extends State<CreateView> {
                   minimumSize: Size(screen_width, 20),
                   backgroundColor: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Cancel',
                     style: TextStyle(
                       color: Colors.black,
