@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twodu/home.dart';
+import 'package:twodu/task/create_task_view.dart';
 import 'package:twodu/task/task.dart';
 
 void main() {
@@ -10,7 +11,7 @@ void main() {
           seedColor: const Color.fromARGB(255, 110, 40, 231)),
       useMaterial3: true,
     ),
-    home: const Home(),
+    home: const CreateView(),
     debugShowCheckedModeBanner: false,
   ));
 }

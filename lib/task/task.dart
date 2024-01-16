@@ -45,11 +45,21 @@ class Task extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      decoration: isCompleted
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none),
                 ),
                 Text(
                   dueDay + " " + Frequency.toString(),
-                  style: const TextStyle(fontSize: 11),
+                  style: TextStyle(
+                    fontSize: 12,
+                    decoration: isCompleted
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                  ),
                 ),
               ],
             )
