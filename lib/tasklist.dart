@@ -22,6 +22,15 @@ class _TaskListState extends State<TaskList> {
     db.updateDatabase();
   }
 
+  void deleteFunction(int index) {
+    db.todoList.removeAt(index);
+    db.updateDatabase();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      taskList,
+      (route) => false,
+    );
+  }
+
   @override
   void initState() {
     if (_tasklist.get('TASKLIST') == null) {
@@ -48,6 +57,9 @@ class _TaskListState extends State<TaskList> {
             Frequency: db.todoList[index][2],
             dueDay: db.todoList[index][3],
             onChecked: (value) => setCheckedBoxState(value, index),
+            deletetask: (BuildContext) {
+              deleteFunction(index);
+            },
           );
         },
       ),
