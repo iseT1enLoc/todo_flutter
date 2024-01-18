@@ -102,6 +102,9 @@ class _CreateViewState extends State<CreateView> {
               ),
               TextField(
                 controller: description,
+                keyboardType: TextInputType.multiline,
+                minLines: 1, //Normal textInputField will be displayed
+                maxLines: 5,
                 decoration: InputDecoration(
                   hintText: "Enter your description",
                   filled: true,
