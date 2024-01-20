@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:twodu/const/const.dart';
 import 'package:twodu/database/data.dart';
+import 'package:twodu/task/edit.dart';
 import 'package:twodu/task/task.dart';
 
 class TaskList extends StatefulWidget {
@@ -51,14 +52,20 @@ class _TaskListState extends State<TaskList> {
       body: ListView.builder(
         itemCount: db.todoList.length,
         itemBuilder: (context, index) {
-          return Task(
-            title: db.todoList[index][0],
-            isCompleted: db.todoList[index][4],
-            Frequency: db.todoList[index][2],
-            dueDay: db.todoList[index][3],
-            onChecked: (value) => setCheckedBoxState(value, index),
-            deletetask: (BuildContext) {
-              deleteFunction(index);
+          return GestureDetector(
+            child: Task(
+              title: db.todoList[index][0],
+              isCompleted: db.todoList[index][4],
+              Frequency: db.todoList[index][2],
+              dueDay: db.todoList[index][3],
+              onChecked: (value) => setCheckedBoxState(value, index),
+              deletetask: (BuildContext) {
+                deleteFunction(index);
+              },
+            ),
+            onTap: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext builder) => UpdateView(index: index)));
             },
           );
         },

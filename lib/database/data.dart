@@ -2,29 +2,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
 class DataTask {
-  /* static final DataTask _instance = DataTask._internal();
-  List todoList = [
-    [
-      "Nau an luc 11h AM",
-      "Description",
-      "everyday",
-      DateTime.utc(2024, 11, 34),
-      true
-    ], 
-    [
-      "On thi nmlt",
-      "Description 2",
-      "usually",
-      DateTime.utc(2024, 11, 34),
-      false
-    ] 
-  ];
-
-  factory DataTask() {
-    return _instance;
-  }
-
-  DataTask._internal(); */
   List todoList = [];
 
   //reference our box

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import 'package:twodu/const/const.dart';
+import 'package:twodu/task/edit.dart';
 import 'package:twodu/tasklist.dart';
 import 'package:twodu/task/create_task_view.dart';
 import 'package:twodu/task/task.dart';

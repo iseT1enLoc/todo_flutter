@@ -5,52 +5,46 @@ import 'package:twodu/const/const.dart';
 import 'package:twodu/database/FrequenData.dart';
 import 'package:twodu/database/data.dart';
 
-class CreateView extends StatefulWidget {
+class UpdateView extends StatefulWidget {
   /* const CreateView({super.key}); */
+  int index;
+  UpdateView({required this.index});
 
   @override
-  State<CreateView> createState() => _CreateViewState();
+  State<UpdateView> createState() => _UpdateViewState();
 }
 
-class _CreateViewState extends State<CreateView> {
-  DateTime? selectedDate;
-  late TextEditingController title;
-  late TextEditingController description;
-  late String frequence;
-
+class _UpdateViewState extends State<UpdateView> {
   /* final void Function(BuildContext) onAdd; */
-  final _tasklist = Hive.box("todolist");
-  DataTask db = DataTask();
-  void SaveNewTask() {
-    db.todoList
-        .add([title.text, description.text, frequence, selectedDate, false]);
-    title.clear();
-    description.clear();
-    db.updateDatabase();
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      taskList,
-      (Route route) => false,
-    );
-  }
-
   @override
   void initState() {
-    title = TextEditingController();
-    description = TextEditingController();
-    frequence = "Select frequence";
     if (_tasklist.get('TASKLIST') == null) {
       db.createInitData();
     } else {
       db.loadData();
+      title.text = db.todoList[widget.index][0];
+      description.text = db.todoList[widget.index][1];
+      frequence = db.todoList[widget.index][2];
+      selectedDate = dueday = db.todoList[widget.index][3];
     }
-    super.initState();
   }
 
-  @override
-  void dispose() {
-    title.clear();
-    description.clear();
-    super.dispose();
+  final _tasklist = Hive.box("todolist");
+
+  DataTask db = DataTask();
+  late TextEditingController title = TextEditingController();
+  late TextEditingController description = TextEditingController();
+  String? frequence;
+  DateTime? dueday;
+  DateTime? selectedDate;
+  void UpdateTask() {
+    db.todoList[widget.index][0] = title.text;
+    db.todoList[widget.index][1] = description.text;
+    db.todoList[widget.index][2] = frequence;
+    db.todoList[widget.index][3] = dueday;
+    db.todoList[widget.index][4] = false;
+
+    db.updateDatabase();
   }
 
   @override
@@ -62,13 +56,13 @@ class _CreateViewState extends State<CreateView> {
       '3 times a week',
       'twice a month',
     ];
-    String _dropdownValue = _items[0];
+    String _dropdownValue = frequence!;
     double screen_width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 226, 226, 226),
       appBar: AppBar(
-        title: const Text("Add Tasks",
+        title: const Text("Edit your task",
             style: TextStyle(
               fontWeight: FontWeight.w600,
             )),
@@ -142,12 +136,10 @@ class _CreateViewState extends State<CreateView> {
                           DropdownMenuItem(value: value, child: Text(value)),
                     )
                     .toList(),
-                hint: const Text("Select frenquency"),
+                hint: Text("Select frenquency"),
                 onChanged: (value) {
-                  setState(() {
-                    _dropdownValue = value.toString();
-                    frequence = _dropdownValue;
-                  });
+                  _dropdownValue = value.toString();
+                  frequence = _dropdownValue;
                 },
               ), //Due date
               const SizedBox(
@@ -158,8 +150,8 @@ class _CreateViewState extends State<CreateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               DateTimeFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Select due day',
+                decoration: InputDecoration(
+                  hintText: selectedDate.toString() ?? 'Select due day',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -171,7 +163,7 @@ class _CreateViewState extends State<CreateView> {
                 initialPickerDateTime:
                     DateTime.now().add(const Duration(days: 20)),
                 onChanged: (DateTime? value) {
-                  selectedDate = value;
+                  dueday = value;
                 },
               ),
               const SizedBox(
@@ -183,9 +175,11 @@ class _CreateViewState extends State<CreateView> {
                   backgroundColor: Colors.black,
                 ),
                 onPressed: () {
-                  SaveNewTask();
+                  UpdateTask();
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      taskList, (Route route) => false);
                 },
-                child: const Text('Add',
+                child: const Text('Done',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -199,7 +193,10 @@ class _CreateViewState extends State<CreateView> {
                   minimumSize: Size(screen_width, 20),
                   backgroundColor: Colors.white,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      taskList, (Route route) => false);
+                },
                 child: const Text('Cancel',
                     style: TextStyle(
                       color: Colors.black,

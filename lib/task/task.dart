@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:twodu/task/create_task_view.dart';
+import 'package:twodu/task/edit.dart';
 
 class Task extends StatefulWidget {
   final String title;
@@ -10,6 +12,7 @@ class Task extends StatefulWidget {
   bool isCompleted = false;
   Function(bool?)? onChecked; //
   Function(BuildContext) deletetask;
+
   Task({
     super.key,
     required this.title,
@@ -28,6 +31,8 @@ class _TaskState extends State<Task> {
   bool isChecked = false;
 
   String? Description;
+
+  void UpdateFunction() {}
 
   @override
   Widget build(BuildContext context) {
