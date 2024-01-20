@@ -56,7 +56,9 @@ class _TaskListState extends State<TaskList> {
             child: Task(
               title: db.todoList[index][0],
               isCompleted: db.todoList[index][4],
-              Frequency: db.todoList[index][2],
+              Frequency: db.todoList[index][2] == 'Select Frequency'
+                  ? ''
+                  : db.todoList[index][2],
               dueDay: db.todoList[index][3],
               onChecked: (value) => setCheckedBoxState(value, index),
               deletetask: (BuildContext) {
