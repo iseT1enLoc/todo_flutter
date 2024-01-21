@@ -36,19 +36,19 @@ class _TaskState extends State<Task> {
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        children: [
-          SlidableAction(
-              onPressed: widget.deletetask,
-              icon: Icons.delete,
-              backgroundColor: Colors.red.shade300,
-              borderRadius: BorderRadius.circular(10.0))
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
+      child: Slidable(
+        endActionPane: ActionPane(
+          motion: const StretchMotion(),
+          children: [
+            SlidableAction(
+                onPressed: widget.deletetask,
+                icon: Icons.delete,
+                backgroundColor: Colors.red.shade300,
+                borderRadius: BorderRadius.circular(10.0))
+          ],
+        ),
         child: Container(
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(10),
