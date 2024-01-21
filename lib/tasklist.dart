@@ -47,7 +47,7 @@ class _TaskListState extends State<TaskList> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 226, 226, 226),
       appBar: AppBar(
-        title: const Text("All task"),
+        title: const Text("All tasks"),
       ),
       body: ListView.builder(
         itemCount: db.todoList.length,
