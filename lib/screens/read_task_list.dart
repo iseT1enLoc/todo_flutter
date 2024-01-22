@@ -50,34 +50,42 @@ class _TaskListState extends State<TaskList> {
       appBar: AppBar(
         title: const Text("All tasks"),
       ),
-      body: /*  db.todotask.length == 0
-          ? Container(
-              child: const Text("Nothing to display for you"),
+      body: db.todotask.isEmpty
+          ? const Center(
+              child: Text(
+                "Add your first task",
+                style: TextStyle(
+                  color: Colors.amber,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
             )
-          : */
-          ListView.builder(
-        itemCount: db.todotask.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            child: TaskCard(
-              title: db.todotask[index].title,
-              isCompleted: db.todotask[index].isCompleted,
-              Frequency: db.todotask[index].frequency == 'Select Frequency'
-                  ? ''
-                  : db.todotask[index].frequency,
-              dueDay: db.todotask[index].dueday,
-              onChecked: (value) => setCheckedBoxState(value, index),
-              deletetask: (BuildContext) {
-                deleteFunction(index);
+          : ListView.builder(
+              itemCount: db.todotask.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: TaskCard(
+                    title: db.todotask[index].title,
+                    isCompleted: db.todotask[index].isCompleted,
+                    Frequency:
+                        db.todotask[index].frequency == 'Select Frequency'
+                            ? ''
+                            : db.todotask[index].frequency,
+                    dueDay: db.todotask[index].dueday,
+                    onChecked: (value) => setCheckedBoxState(value, index),
+                    deletetask: (BuildContext) {
+                      deleteFunction(index);
+                    },
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext builder) =>
+                            UpdateView(index: index)));
+                  },
+                );
               },
             ),
-            onTap: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext builder) => UpdateView(index: index)));
-            },
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(createRoute),
         child: const Icon(Icons.add),

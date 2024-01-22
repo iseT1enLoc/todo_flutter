@@ -15,5 +15,5 @@ void main() async {
 
   //open the box
   var box = await Hive.openBox("taskBox");
-  runApp(MyApp());
+  runApp(const MyApp());
 }
