@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:twodu/const/const.dart';
-import 'package:twodu/database/FrequenData.dart';
-import 'package:twodu/database/data.dart';
+import 'package:twodu/const/routes.dart';
+import '/database/data.dart';
+
+import 'package:twodu/models/task_model.dart';
 
 class CreateView extends StatefulWidget {
   /* const CreateView({super.key}); */
@@ -13,20 +14,28 @@ class CreateView extends StatefulWidget {
 }
 
 class _CreateViewState extends State<CreateView> {
-  DateTime? selectedDate;
-  late TextEditingController title;
-  late TextEditingController description;
-  late String frequence;
+  DateTime? _selectedDate;
+  late TextEditingController _title;
+  late TextEditingController _description;
+  late String _frequency;
 
   /* final void Function(BuildContext) onAdd; */
-  final _tasklist = Hive.box("todolist");
+  final task_list = Hive.box("taskBox");
   DataTask db = DataTask();
+
   void SaveNewTask() {
-    db.todoList
-        .add([title.text, description.text, frequence, selectedDate, false]);
-    title.clear();
-    description.clear();
-    db.updateDatabase();
+    Task new_task = Task(
+      title: _title != null ? _title.text : "What you do?",
+      description:
+          _description != null ? _description.text : "add your description",
+      frequency:
+          _frequency == "Select frequence" ? "Select frequence" : _frequency,
+      dueday: _selectedDate == null ? DateTime.now() : _selectedDate,
+      isCompleted: false,
+    );
+
+    db.add_task(new_task);
+
     Navigator.of(context).pushNamedAndRemoveUntil(
       taskList,
       (Route route) => false,
@@ -35,33 +44,34 @@ class _CreateViewState extends State<CreateView> {
 
   @override
   void initState() {
-    title = TextEditingController();
-    description = TextEditingController();
-    frequence = "Select frequence";
-    if (_tasklist.get('TASKLIST') == null) {
+    super.initState();
+    _title = TextEditingController();
+    _description = TextEditingController();
+    _frequency = "Select frequence";
+    if (task_list.get('TASKLIST') == null) {
       db.createInitData();
     } else {
       db.loadData();
     }
-    super.initState();
+    // Get reference to an already opened box
   }
 
   @override
   void dispose() {
-    title.clear();
-    description.clear();
+    _title.clear();
+    _description.clear();
     super.dispose();
   }
 
+  final List<String> _items = <String>[
+    'Select Frequency',
+    'everyday',
+    '2 times a week',
+    '3 times a week',
+    'twice a month',
+  ];
   @override
   Widget build(BuildContext context) {
-    List<String> _items = <String>[
-      'Select Frequency',
-      'everyday',
-      '2 times a week',
-      '3 times a week',
-      'twice a month',
-    ];
     String _dropdownValue = _items[0];
     double screen_width = MediaQuery.of(context).size.width;
 
@@ -86,7 +96,7 @@ class _CreateViewState extends State<CreateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               TextField(
-                controller: title,
+                controller: _title,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -104,7 +114,7 @@ class _CreateViewState extends State<CreateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               TextField(
-                controller: description,
+                controller: _description,
                 keyboardType: TextInputType.multiline,
                 minLines: 1, //Normal textInputField will be displayed
                 maxLines: 5,
@@ -146,7 +156,7 @@ class _CreateViewState extends State<CreateView> {
                 onChanged: (value) {
                   setState(() {
                     _dropdownValue = value.toString();
-                    frequence = _dropdownValue;
+                    _frequency = _dropdownValue;
                   });
                 },
               ), //Due date
@@ -171,7 +181,7 @@ class _CreateViewState extends State<CreateView> {
                 initialPickerDateTime:
                     DateTime.now().add(const Duration(days: 20)),
                 onChanged: (DateTime? value) {
-                  selectedDate = value;
+                  _selectedDate = value;
                 },
               ),
               const SizedBox(

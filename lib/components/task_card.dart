@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:twodu/task/create_task_view.dart';
-import 'package:twodu/task/edit.dart';
+import 'package:twodu/screens/create_task.dart';
+import 'package:twodu/screens/edit_task.dart';
 
-class Task extends StatefulWidget {
+@immutable
+class TaskCard extends StatefulWidget {
   final String title;
 
   String? Frequency;
@@ -13,7 +14,7 @@ class Task extends StatefulWidget {
   Function(bool?)? onChecked; //
   Function(BuildContext) deletetask;
 
-  Task({
+  TaskCard({
     super.key,
     required this.title,
     required this.isCompleted,
@@ -24,10 +25,10 @@ class Task extends StatefulWidget {
   });
 
   @override
-  State<Task> createState() => _TaskState();
+  State<TaskCard> createState() => _TaskCardState();
 }
 
-class _TaskState extends State<Task> {
+class _TaskCardState extends State<TaskCard> {
   bool isChecked = false;
 
   String? Description;

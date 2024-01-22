@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:twodu/const/const.dart';
+import 'package:twodu/const/routes.dart';
 import 'package:twodu/database/data.dart';
-import 'package:twodu/task/edit.dart';
-import 'package:twodu/task/task.dart';
+
+import 'package:twodu/screens/edit_task.dart';
+import 'package:twodu/components/task_card.dart';
 
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
@@ -14,18 +15,18 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  final _tasklist = Hive.box("todolist");
+  final _tasklist = Hive.box("taskBox");
   DataTask db = DataTask();
+
   void setCheckedBoxState(bool? value, int index) {
     setState(() {
-      db.todoList[index][4] = !db.todoList[index][4];
+      bool? current_state = db.todotask[index].isCompleted;
+      db.todotask[index].isCompleted = !current_state!;
     });
-    db.updateDatabase();
   }
 
   void deleteFunction(int index) {
-    db.todoList.removeAt(index);
-    db.updateDatabase();
+    db.delete_task(index);
     Navigator.of(context).pushNamedAndRemoveUntil(
       taskList,
       (route) => false,
@@ -34,7 +35,7 @@ class _TaskListState extends State<TaskList> {
 
   @override
   void initState() {
-    if (_tasklist.get('TASKLIST') == null) {
+    if (_tasklist.get('taskcollection') == null) {
       db.createInitData();
     } else {
       db.loadData();
@@ -49,17 +50,22 @@ class _TaskListState extends State<TaskList> {
       appBar: AppBar(
         title: const Text("All tasks"),
       ),
-      body: ListView.builder(
-        itemCount: db.todoList.length,
+      body: /*  db.todotask.length == 0
+          ? Container(
+              child: const Text("Nothing to display for you"),
+            )
+          : */
+          ListView.builder(
+        itemCount: db.todotask.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            child: Task(
-              title: db.todoList[index][0],
-              isCompleted: db.todoList[index][4],
-              Frequency: db.todoList[index][2] == 'Select Frequency'
+            child: TaskCard(
+              title: db.todotask[index].title,
+              isCompleted: db.todotask[index].isCompleted,
+              Frequency: db.todotask[index].frequency == 'Select Frequency'
                   ? ''
-                  : db.todoList[index][2],
-              dueDay: db.todoList[index][3],
+                  : db.todotask[index].frequency,
+              dueDay: db.todotask[index].dueday,
               onChecked: (value) => setCheckedBoxState(value, index),
               deletetask: (BuildContext) {
                 deleteFunction(index);

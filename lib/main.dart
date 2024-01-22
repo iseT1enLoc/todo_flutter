@@ -1,30 +1,19 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-
-import 'package:twodu/const/const.dart';
-import 'package:twodu/task/edit.dart';
-import 'package:twodu/tasklist.dart';
-import 'package:twodu/task/create_task_view.dart';
-import 'package:twodu/task/task.dart';
+import 'package:twodu/components/my_app.dart';
+import 'package:twodu/models/task_model.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final documentDirectory = Directory.current.path;
+  await Hive
+    ..init(documentDirectory)
+    ..registerAdapter(task_adapter());
   //init the hive
   await Hive.initFlutter();
 
   //open the box
-  var box = await Hive.openBox("todolist");
-  runApp(MaterialApp(
-    title: 'Flutter Demo',
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 110, 40, 231)),
-      useMaterial3: true,
-    ),
-    home: const TaskList(),
-    routes: {
-      taskList: (context) => const TaskList(),
-      createRoute: (context) => CreateView(),
-    },
-    debugShowCheckedModeBanner: false,
-  ));
+  var box = await Hive.openBox("taskBox");
+  runApp(MyApp());
 }

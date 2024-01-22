@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:twodu/const/const.dart';
-import 'package:twodu/database/FrequenData.dart';
-import 'package:twodu/database/data.dart';
+import 'package:twodu/const/routes.dart';
+
+import '../../database/data.dart';
 
 class UpdateView extends StatefulWidget {
   /* const CreateView({super.key}); */
@@ -22,41 +22,40 @@ class _UpdateViewState extends State<UpdateView> {
       db.createInitData();
     } else {
       db.loadData();
-      title.text = db.todoList[widget.index][0];
-      description.text = db.todoList[widget.index][1];
-      frequence = db.todoList[widget.index][2];
-      selectedDate = dueday = db.todoList[widget.index][3];
+      _title.text = db.todotask[widget.index].title!;
+      _description.text = db.todotask[widget.index].description!;
+      _frequence = db.todotask[widget.index].frequency!;
+      _selectedDate = _dueday = db.todotask[widget.index].dueday!;
     }
   }
 
   final _tasklist = Hive.box("todolist");
 
   DataTask db = DataTask();
-  late TextEditingController title = TextEditingController();
-  late TextEditingController description = TextEditingController();
-  String? frequence;
-  DateTime? dueday;
-  DateTime? selectedDate;
+  late TextEditingController _title = TextEditingController();
+  late TextEditingController _description = TextEditingController();
+  String? _frequence;
+  DateTime? _dueday;
+  DateTime? _selectedDate;
   void UpdateTask() {
-    db.todoList[widget.index][0] = title.text;
-    db.todoList[widget.index][1] = description.text;
-    db.todoList[widget.index][2] = frequence;
-    db.todoList[widget.index][3] = dueday;
-    db.todoList[widget.index][4] = false;
-
+    db.todotask[widget.index].title = _title.text;
+    db.todotask[widget.index].description = _description.text;
+    db.todotask[widget.index].frequency = _frequence;
+    db.todotask[widget.index].dueday = _dueday;
+    db.todotask[widget.index].isCompleted = false;
     db.updateDatabase();
   }
 
+  final List<String> _items = <String>[
+    'Select Frequency',
+    'everyday',
+    '2 times a week',
+    '3 times a week',
+    'twice a month',
+  ];
   @override
   Widget build(BuildContext context) {
-    List<String> _items = <String>[
-      'Select Frequency',
-      'everyday',
-      '2 times a week',
-      '3 times a week',
-      'twice a month',
-    ];
-    String _dropdownValue = frequence!;
+    String _dropdownValue = _frequence!;
     double screen_width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -80,7 +79,7 @@ class _UpdateViewState extends State<UpdateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               TextField(
-                controller: title,
+                controller: _title,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -98,7 +97,7 @@ class _UpdateViewState extends State<UpdateView> {
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
               ),
               TextField(
-                controller: description,
+                controller: _description,
                 keyboardType: TextInputType.multiline,
                 minLines: 1, //Normal textInputField will be displayed
                 maxLines: 5,
@@ -139,7 +138,7 @@ class _UpdateViewState extends State<UpdateView> {
                 hint: Text("Select frenquency"),
                 onChanged: (value) {
                   _dropdownValue = value.toString();
-                  frequence = _dropdownValue;
+                  _frequence = _dropdownValue;
                 },
               ), //Due date
               const SizedBox(
@@ -151,7 +150,7 @@ class _UpdateViewState extends State<UpdateView> {
               ),
               DateTimeFormField(
                 decoration: InputDecoration(
-                  hintText: selectedDate.toString() ?? 'Select due day',
+                  hintText: _selectedDate.toString() ?? 'Select due day',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -163,7 +162,7 @@ class _UpdateViewState extends State<UpdateView> {
                 initialPickerDateTime:
                     DateTime.now().add(const Duration(days: 20)),
                 onChanged: (DateTime? value) {
-                  dueday = value;
+                  _dueday = value;
                 },
               ),
               const SizedBox(
