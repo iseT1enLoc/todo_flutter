@@ -7,6 +7,7 @@ import '../../database/data.dart';
 
 class UpdateView extends StatefulWidget {
   /* const CreateView({super.key}); */
+
   int index;
   UpdateView({required this.index});
 
@@ -16,6 +17,25 @@ class UpdateView extends StatefulWidget {
 
 class _UpdateViewState extends State<UpdateView> {
   /* final void Function(BuildContext) onAdd; */
+
+  final _tasklist = Hive.box("taskBox");
+
+  DataTask db = DataTask();
+  late TextEditingController _title = TextEditingController();
+  late TextEditingController _description = TextEditingController();
+  String? _frequence;
+  DateTime? _dueday;
+  DateTime? _selectedDate;
+
+  void UpdateTask() {
+    db.todotask[widget.index].title = _title.text;
+    db.todotask[widget.index].description = _description.text;
+    db.todotask[widget.index].frequency = _frequence;
+    db.todotask[widget.index].dueday = _dueday;
+    db.todotask[widget.index].isCompleted = false;
+    db.updateDatabase();
+  }
+
   @override
   void initState() {
     if (_tasklist.get('TASKLIST') == null) {
@@ -27,23 +47,6 @@ class _UpdateViewState extends State<UpdateView> {
       _frequence = db.todotask[widget.index].frequency!;
       _selectedDate = _dueday = db.todotask[widget.index].dueday!;
     }
-  }
-
-  final _tasklist = Hive.box("todolist");
-
-  DataTask db = DataTask();
-  late TextEditingController _title = TextEditingController();
-  late TextEditingController _description = TextEditingController();
-  String? _frequence;
-  DateTime? _dueday;
-  DateTime? _selectedDate;
-  void UpdateTask() {
-    db.todotask[widget.index].title = _title.text;
-    db.todotask[widget.index].description = _description.text;
-    db.todotask[widget.index].frequency = _frequence;
-    db.todotask[widget.index].dueday = _dueday;
-    db.todotask[widget.index].isCompleted = false;
-    db.updateDatabase();
   }
 
   final List<String> _items = <String>[

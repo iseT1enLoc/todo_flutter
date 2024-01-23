@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:twodu/components/no_task.dart';
 
 import 'package:twodu/const/routes.dart';
 import 'package:twodu/database/data.dart';
@@ -51,16 +52,7 @@ class _TaskListState extends State<TaskList> {
         title: const Text("All tasks"),
       ),
       body: db.todotask.isEmpty
-          ? const Center(
-              child: Text(
-                "Add your first task",
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            )
+          ? const NoTask()
           : ListView.builder(
               itemCount: db.todotask.length,
               itemBuilder: (context, index) {
@@ -78,10 +70,11 @@ class _TaskListState extends State<TaskList> {
                       deleteFunction(index);
                     },
                   ),
-                  onTap: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext builder) =>
-                            UpdateView(index: index)));
+                  onTap: () async {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (BuildContext builder) {
+                      return UpdateView(index: index);
+                    }));
                   },
                 );
               },
